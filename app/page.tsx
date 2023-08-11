@@ -2,13 +2,11 @@ import NextLink from "next/link";
 import { Link } from "@nextui-org/link";
 import { Snippet } from "@nextui-org/snippet";
 import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
-import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
-import { Plus, QrCode } from "lucide-react";
+import { Download, Plus, QrCode } from "lucide-react";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
-import FileTable from "@/components/table";
+import FileGrid from "@/components/filelist";
 
 export default function Home() {
   return (
@@ -80,8 +78,19 @@ export default function Home() {
         </label>
       </div>
 
-      <div>
-        <FileTable />
+      <div className="mt-8">
+        <Snippet hideSymbol hideCopyButton variant="flat" fullWidth={true}>
+          <span className="flex items-center gap-4 px-2 py-2 font-sans">
+            Download all the files{" "}
+            <Button color="primary" radius="full" size="sm" variant="solid">
+              Download All <Download size={20} />
+            </Button>
+          </span>
+        </Snippet>
+      </div>
+
+      <div className="flex justify-center content-center mt-8">
+        <FileGrid />
       </div>
     </section>
   );
