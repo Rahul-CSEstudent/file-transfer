@@ -1,3 +1,5 @@
+'use client';
+
 import NextLink from "next/link";
 import { Link } from "@nextui-org/link";
 import { Snippet } from "@nextui-org/snippet";
@@ -6,9 +8,91 @@ import { title, subtitle } from "@/components/primitives";
 import { Download, Plus, QrCode } from "lucide-react";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+import { useState, useEffect } from "react";
 import FileGrid from "@/components/filelist";
+import {S3Client, PutObjectCommand, GetObjectCommand , DeleteObjectCommand} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export default function Home() {
+
+  function handleFileUpload() {
+
+      // fileUploadRef.current?.click();
+      // console.log(fileUploadRef.current?.files);
+    
+      const fileUploadRef = document.getElementById('fileUpload') as HTMLInputElement;
+      fileUploadRef.click();
+      console.log(fileUploadRef.files);
+  }
+
+  const [loading, setLoading] = useState(null);
+  const [fileurl, setfileurl] = useState();
+
+  const s3Client = new S3Client({
+      credentials : {
+          accessKeyId: "jv3j5knynfdpnosrulnx752zjf4a",
+          secretAccessKey: "j254xq46dn3pgtp5hss2r5hq3zcbnwgurky5e6qf2xxaxxrxoel76",
+      },
+      region: "us-1",
+      endpoint: "https://gateway.storjshare.io",
+  })
+
+
+  const post = async(event:any ) => {
+      event.preventDefault()
+      const file = event.target[0].files[0]
+      
+      
+      const params = {
+          Bucket: "filery",
+          Key: file.name,
+          Body: file,
+      }
+
+      const command = new PutObjectCommand(params)
+      const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+      // console.log(signedUrl)
+      const response = await fetch(signedUrl, {
+          method: "PUT",
+          body: file,
+      })
+      // console.log(response.url)
+
+      // write a logic to genreate a url to download the file from storj
+      const params1 = {
+          Bucket: "filery",
+          Key: file.name,
+      }
+
+      const command1 = new GetObjectCommand(params1)
+      const signedUrl1 = await getSignedUrl(s3Client, command1, { expiresIn: 3600 })
+      // console.log(signedUrl1)
+      const response1 = await fetch(signedUrl1, {
+          method: "GET",
+      })
+      console.log(response1.url)
+      // setfileurl(response1.url)
+      setfileurl(response1.url as any)
+
+
+      // const params2 = {
+      //     Bucket: "filery",
+      //     Key: file.name,
+      // }
+
+      // //delete the file after 10min
+      // setTimeout(async () => {
+      //     const command2 = new DeleteObjectCommand(params2)
+      //     const signedUrl2 = await getSignedUrl(s3Client, command2, { expiresIn: 3600 })
+      //     console.log(signedUrl2)
+      //     const response2 = await fetch(signedUrl2, {
+      //         method: "DELETE",
+      //     })
+      //     console.log(response2.url)
+      // }, 6000)
+
+  }
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       {/* heading section */}
@@ -37,7 +121,7 @@ export default function Home() {
       </div>
 
       {/* information tab */}
-      <div className="mt-8">
+      <div className="mt-8 mb-5">
         <Snippet hideSymbol hideCopyButton variant="flat">
           <span className="flex items-center gap-4 px-2">
             Create or Join a session{" "}
@@ -49,7 +133,7 @@ export default function Home() {
       </div>
 
       {/* file drag and drop box */}
-      <div className="gap-4 p-4 mt-8 bg-default-50 rounded-2xl">
+      {/* <div className="gap-4 p-4 mt-8 bg-default-50 rounded-2xl">
         <label
           htmlFor="dropzone-file"
           className="flex flex-col items-center w-full max-w-lg p-6 text-center border-2 border-dashed cursor-pointer rounded-xl border-primary-400 bg-default-100"
@@ -73,10 +157,16 @@ export default function Home() {
           </h2>
           <p className="mt-2 tracking-wide text-default-500">
             Upload or darg &amp; drop your file here.{" "}
-          </p>
-          <input id="dropzone-file" type="file" className="hidden" />
-        </label>
-      </div>
+          </p> */}
+          <form onSubmit={post}>
+            <input type="file"/>
+              <button className="inline-block px-4 py-2 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700">
+                Add file
+              </button>
+          </form>
+          
+        {/* </label>
+      </div> */}
 
       <div className="mt-8">
         <Snippet hideSymbol hideCopyButton variant="flat" fullWidth={true}>
