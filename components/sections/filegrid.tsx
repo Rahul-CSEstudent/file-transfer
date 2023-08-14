@@ -7,7 +7,7 @@ import { Download } from "lucide-react";
 import { files } from "@/config/data";
 import { Button } from "@nextui-org/button";
 
-export default function FileGrid() {
+export function FileGrid() {
   return (
     <div className="flex flex-wrap justify-center items-center gap-4">
       {files.map((file, index) => (
