@@ -12,26 +12,40 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [peer, setPeer] = useState<Peer>();
-  const [files, setFiles] = useState<(FileList | null)[]>([]);
+  const [files, setFiles] = useState<string[]>([]);
   const [connection, setConnection] = useState<DataConnection>();
   const [userId, setUserId] = useState<string>();
 
   // initializes current user
-  const createSession = () => {
-    const p = new Peer();
-    setPeer(p);
-    p?.on("error", (e) => {
-      console.log("We encountered an error", e.name, e.message);
+  // useEffect(() => {
+  //   const p = new Peer();
+  //   setPeer(p);
+  //   p?.on("error", (e) => {
+  //     console.log("We encountered an error", e.name, e.message);
+  //   });
+
+  //   p?.on("connection", (conn) => {
+  //     console.log("got a connection from ", conn.peer);
+  //     setConnection(conn);
+  //   });
+
+  //   setUserId(p.id);
+  //   console.log(p.id);
+  // }, []);
+  useEffect(() => {
+    const peer = new Peer();
+    peer.on("open", (id) => {
+      setUserId(id);
     });
 
-    p?.on("connection", (conn) => {
+    peer.on("connection", (conn) => {
       console.log("got a connection from ", conn.peer);
       setConnection(conn);
     });
 
-    setUserId(p.id);
-    console.log(p.id);
-  };
+    setPeer(peer);
+    console.log(peer);
+  }, []);
 
   // runs when the connection changes to update the event listeners
   useEffect(() => {
@@ -63,7 +77,7 @@ export default function Home() {
       <Header />
 
       {/* buttons */}
-      <Actions joinSession={connectToPeer} createSession={createSession} />
+      <Actions joinSession={connectToPeer} createSession={() => {}} />
 
       {/* information tab */}
       <Info content={userId} />

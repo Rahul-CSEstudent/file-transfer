@@ -1,16 +1,30 @@
 import { Dispatch, SetStateAction, useRef } from "react";
 
 interface FileInputBoxProps {
-  setFiles: Dispatch<SetStateAction<(FileList | null)[]>>;
+  setFiles: Dispatch<SetStateAction<string[]>>;
 }
 export function FileInputBox({ setFiles }: FileInputBoxProps) {
   const inputBoxRef = useRef<HTMLInputElement | null>(null);
 
   function handleInputChange() {
     const fileUploadRef = inputBoxRef.current;
+
+    const res: string[] = [];
+
     if (fileUploadRef && fileUploadRef.files) {
       console.log(fileUploadRef.files);
-      setFiles([fileUploadRef.files]);
+      const reader = new FileReader();
+
+      for (let i = 0; i < fileUploadRef.files.length; i++) {
+        const file = fileUploadRef.files[i];
+        reader.onload = () => {
+          const binaryString = reader.result as string;
+          res.push(binaryString);
+        };
+        reader.readAsBinaryString(file);
+      }
+
+      setFiles(res);
     }
   }
 
