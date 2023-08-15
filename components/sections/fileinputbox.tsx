@@ -1,4 +1,19 @@
-export function FileInputBox() {
+import { Dispatch, SetStateAction, useRef } from "react";
+
+interface FileInputBoxProps {
+  setFiles: Dispatch<SetStateAction<(FileList | null)[]>>;
+}
+export function FileInputBox({ setFiles }: FileInputBoxProps) {
+  const inputBoxRef = useRef<HTMLInputElement | null>(null);
+
+  function handleInputChange() {
+    const fileUploadRef = inputBoxRef.current;
+    if (fileUploadRef && fileUploadRef.files) {
+      console.log(fileUploadRef.files);
+      setFiles([fileUploadRef.files]);
+    }
+  }
+
   return (
     <div className="gap-4 p-4 mt-8 bg-default-50 rounded-2xl">
       <label
@@ -25,7 +40,13 @@ export function FileInputBox() {
         <p className="mt-2 tracking-wide text-default-500">
           Upload or darg &amp; drop your file here.{" "}
         </p>
-        <input id="dropzone-file" type="file" className="hidden" />
+        <input
+          ref={inputBoxRef}
+          onChange={handleInputChange}
+          id="dropzone-file"
+          type="file"
+          className="hidden"
+        />
       </label>
     </div>
   );
