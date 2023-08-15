@@ -17,21 +17,6 @@ export default function Home() {
   const [userId, setUserId] = useState<string>();
 
   // initializes current user
-  // useEffect(() => {
-  //   const p = new Peer();
-  //   setPeer(p);
-  //   p?.on("error", (e) => {
-  //     console.log("We encountered an error", e.name, e.message);
-  //   });
-
-  //   p?.on("connection", (conn) => {
-  //     console.log("got a connection from ", conn.peer);
-  //     setConnection(conn);
-  //   });
-
-  //   setUserId(p.id);
-  //   console.log(p.id);
-  // }, []);
   useEffect(() => {
     const peer = new Peer();
     peer.on("open", (id) => {
