@@ -1,15 +1,20 @@
+"use client";
+
 import { Dispatch, SetStateAction, useRef } from "react";
 
-interface FileInputBoxProps {
-  setFiles: Dispatch<SetStateAction<string[]>>;
+export interface FileType {
+  name: string;
+  type: string;
+  data: string;
 }
-export function FileInputBox({ setFiles }: FileInputBoxProps) {
+interface FileInputBoxProps {
+  sendFiles: (file: FileType) => void;
+}
+export function FileInputBox(props: FileInputBoxProps) {
   const inputBoxRef = useRef<HTMLInputElement | null>(null);
 
   function handleInputChange() {
     const fileUploadRef = inputBoxRef.current;
-
-    const res: string[] = [];
 
     if (fileUploadRef && fileUploadRef.files) {
       console.log(fileUploadRef.files);
@@ -18,13 +23,14 @@ export function FileInputBox({ setFiles }: FileInputBoxProps) {
       for (let i = 0; i < fileUploadRef.files.length; i++) {
         const file = fileUploadRef.files[i];
         reader.onload = () => {
-          const binaryString = reader.result as string;
-          res.push(binaryString);
+          props.sendFiles({
+            name: file.name,
+            type: file.type,
+            data: reader.result as string,
+          });
         };
         reader.readAsBinaryString(file);
       }
-
-      setFiles(res);
     }
   }
 

@@ -3,11 +3,15 @@
 import React from "react";
 import { Chip, Card, CardHeader, CardBody } from "@nextui-org/react";
 import { Download } from "lucide-react";
+import { type FileType } from "@/components/sections/fileinputbox";
 
 import { files } from "@/config/data";
 import { Button } from "@nextui-org/button";
 
-export function FileGrid() {
+interface FileGridProps {
+  files: FileType[];
+}
+export function FileGrid({ files }: FileGridProps) {
   return (
     <div className="flex flex-wrap justify-center items-center gap-4">
       {files.map((file, index) => (
@@ -18,11 +22,7 @@ export function FileGrid() {
 }
 
 interface FileCardProps {
-  file: {
-    name: string;
-    uploadedFrom: string;
-    type: string;
-  };
+  file: FileType;
 }
 export function FileCard(props: FileCardProps) {
   return (
@@ -43,9 +43,9 @@ export function FileCard(props: FileCardProps) {
       </CardHeader>
       <CardBody>
         <Chip color="default">{props.file.type}</Chip>
-        <h5 className="mt-4 tracking-tight text-small text-default-400">
+        {/* <h5 className="mt-4 tracking-tight text-small text-default-400">
           uploaded from {props.file.uploadedFrom} device
-        </h5>
+        </h5> */}
       </CardBody>
     </Card>
   );
