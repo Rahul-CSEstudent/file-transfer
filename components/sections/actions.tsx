@@ -22,7 +22,7 @@ export function Actions(props: ActionsProps) {
       <Input
         onChange={(e) => setUserId(e.target.value)}
         type="text"
-        placeholder="000-000"
+        placeholder="000000"
         radius="full"
       />
       <div>
