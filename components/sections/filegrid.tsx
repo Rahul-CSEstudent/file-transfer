@@ -5,7 +5,6 @@ import { Chip, Card, CardHeader, CardBody } from "@nextui-org/react";
 import { Download } from "lucide-react";
 import { type FileType } from "@/components/sections/fileinputbox";
 
-import { files } from "@/config/data";
 import { Button } from "@nextui-org/button";
 
 interface FileGridProps {
