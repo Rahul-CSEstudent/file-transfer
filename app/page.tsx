@@ -22,7 +22,11 @@ export default function Home() {
 
   // initializes current user
   useEffect(() => {
-    const peer = new Peer();
+    const peer = new Peer(
+      Math.floor(Math.random() * 1000000)
+        .toString()
+        .padStart(6, "0")
+    );
     peer.on("open", (id) => {
       setUserId(id);
     });
