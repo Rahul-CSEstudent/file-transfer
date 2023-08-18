@@ -19,25 +19,46 @@ export default function Home() {
   const [queue, setQueue] = useState<FileType[]>([]);
   const [connection, setConnection] = useState<DataConnection>();
   const [userId, setUserId] = useState<string>();
+  const [isConnected, setIsConnected] = useState<{
+    bool: Boolean;
+    peer: string;
+  }>({
+    bool: false,
+    peer: "",
+  });
 
   // initializes current user
   useEffect(() => {
-    const peer = new Peer(
-      Math.floor(Math.random() * 1000000)
-        .toString()
-        .padStart(6, "0")
-    );
-    peer.on("open", (id) => {
-      setUserId(id);
-    });
+    setTimeout(() => {
+      const randomString = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      const peer = new Peer(randomString);
+      peer.on("open", (id) => {
+        setUserId(id);
+      });
 
-    peer.on("connection", (conn) => {
-      console.log("got a connection from ", conn.peer);
-      setConnection(conn);
-    });
+      peer.on("connection", (conn) => {
+        console.log("got a connection from ", conn.peer);
+        setConnection(conn);
+        setIsConnected({
+          bool: true,
+          peer: conn.peer,
+        });
+      });
 
-    setPeer(peer);
-    console.log(peer);
+      peer.on("disconnected", (id: string) => {
+        console.log("disconnected from", id);
+        setConnection(undefined);
+        setIsConnected({
+          bool: false,
+          peer: "",
+        });
+      });
+
+      setPeer(peer);
+      console.log(peer);
+    }, 1000);
   }, []);
 
   // runs when the connection changes to update the event listeners
@@ -61,10 +82,23 @@ export default function Home() {
   }, [queue]);
 
   function connectToPeer(id: string) {
+    console.log("connecting to the peer", id);
     const conn = peer?.connect(id);
     conn?.on("open", () => {
       console.log("connected to", id);
       setConnection(conn);
+      setIsConnected({
+        bool: true,
+        peer: conn.peer,
+      });
+    });
+    conn?.on("close", () => {
+      console.log("disconnected from", id);
+      setConnection(undefined);
+      setIsConnected({
+        bool: false,
+        peer: "",
+      });
     });
   }
 
@@ -87,7 +121,7 @@ export default function Home() {
       <Info content={userId} />
       <FileInputBox sendFiles={sendFiles} />
 
-      {files.length > 0 && <DownloadActions />}
+      {files.length > 0 && <DownloadActions files={files} />}
 
       <div className="flex content-center justify-center mt-8">
         <FileGrid files={files} />

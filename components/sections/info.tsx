@@ -1,9 +1,6 @@
 "use client";
 
 import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-
-import { QrCode } from "lucide-react";
 
 interface InfoProps {
   content?: string;
@@ -17,14 +14,20 @@ export function Info(props: InfoProps) {
           {props.content ? (
             <div className="flex gap-2 items-center">
               {Array.from({ length: 3 }, (_, index) => (
-                <div className="px-3 py-2 rounded-lg bg-default-100">
+                <div
+                  key={index}
+                  className="px-3 py-2 rounded-lg bg-default-100"
+                >
                   {props.content?.charAt(index)}
                 </div>
               ))}
               <div> - </div>
               {Array.from({ length: 3 }, (_, index) => (
-                <div className="px-3 py-2 rounded-lg bg-default-100">
-                  {props.content?.charAt(2 + index)}
+                <div
+                  key={index + 3}
+                  className="px-3 py-2 rounded-lg bg-default-100"
+                >
+                  {props.content?.charAt(3 + index)}
                 </div>
               ))}
             </div>

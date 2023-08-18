@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useRef } from "react";
 export interface FileType {
   name: string;
   type: string;
-  data: string;
+  data: Blob;
 }
 interface FileInputBoxProps {
   sendFiles: (file: FileType) => void;
@@ -17,19 +17,15 @@ export function FileInputBox(props: FileInputBoxProps) {
     const fileUploadRef = inputBoxRef.current;
 
     if (fileUploadRef && fileUploadRef.files) {
-      console.log(fileUploadRef.files);
-      const reader = new FileReader();
-
       for (let i = 0; i < fileUploadRef.files.length; i++) {
         const file = fileUploadRef.files[i];
-        reader.onload = () => {
-          props.sendFiles({
-            name: file.name,
-            type: file.type,
-            data: reader.result as string,
-          });
-        };
-        reader.readAsBinaryString(file);
+        let blob = new Blob([file], { type: file.type });
+
+        props.sendFiles({
+          name: file.name,
+          type: file.type,
+          data: blob,
+        });
       }
     }
   }

@@ -6,6 +6,7 @@ import { Download } from "lucide-react";
 import { type FileType } from "@/components/sections/fileinputbox";
 
 import { Button } from "@nextui-org/button";
+import fileDownload from "js-file-download";
 
 interface FileGridProps {
   files: FileType[];
@@ -24,6 +25,10 @@ interface FileCardProps {
   file: FileType;
 }
 export function FileCard(props: FileCardProps) {
+  const handleDownload = () => {
+    fileDownload(props.file.data, props.file.name, props.file.type);
+  };
+
   return (
     <Card className="w-full sm:w-[280px]">
       <CardHeader className="justify-between">
@@ -36,7 +41,13 @@ export function FileCard(props: FileCardProps) {
               : props.file.name}
           </h4>
         </div>
-        <Button color="primary" radius="full" size="sm" variant="bordered">
+        <Button
+          onClick={handleDownload}
+          color="primary"
+          radius="full"
+          size="sm"
+          variant="bordered"
+        >
           Download <Download size={20} />
         </Button>
       </CardHeader>
