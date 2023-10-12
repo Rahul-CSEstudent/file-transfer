@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [peer, setPeer] = useState<Peer>();
+  const [status, setStatus] = useState<string>("Connect");
   const [files, setFiles] = useState<FileType[]>([]);
   const [queue, setQueue] = useState<FileType[]>([]);
   const [connection, setConnection] = useState<DataConnection>();
@@ -40,6 +41,7 @@ export default function Home() {
 
       peer.on("connection", (conn) => {
         console.log("got a connection from ", conn.peer);
+        setStatus("Connected to " + conn.peer);
         setConnection(conn);
         setIsConnected({
           bool: true,
@@ -49,6 +51,7 @@ export default function Home() {
 
       peer.on("disconnected", (id: string) => {
         console.log("disconnected from", id);
+        setStatus("connect");
         setConnection(undefined);
         setIsConnected({
           bool: false,
@@ -67,6 +70,7 @@ export default function Home() {
       connection.on("data", (data) => {
         console.log("we got a data");
         console.log(data);
+        
         setFiles((prevFiles) => [...prevFiles, data as FileType]);
       });
     }
@@ -83,9 +87,11 @@ export default function Home() {
 
   function connectToPeer(id: string) {
     console.log("connecting to the peer", id);
+    setStatus("Connecting...");
     const conn = peer?.connect(id);
     conn?.on("open", () => {
       console.log("connected to", id);
+      setStatus("Connected to " + id);
       setConnection(conn);
       setIsConnected({
         bool: true,
@@ -94,6 +100,7 @@ export default function Home() {
     });
     conn?.on("close", () => {
       console.log("disconnected from", id);
+      setStatus("Connect");
       setConnection(undefined);
       setIsConnected({
         bool: false,
@@ -109,13 +116,25 @@ export default function Home() {
     }
   }
 
+  //write a function ot disconnect the peer
+  const handleDisconnect = () => {
+    if (connection) {
+      connection.close();
+      console.log("disconnected");
+      setStatus("Connect");
+    }
+  };
+
+
+
   return (
+    //set background to img "../public/bg.png"
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       {/* heading section */}
       <Header />
 
       {/* buttons */}
-      <Actions joinSession={connectToPeer} />
+      <Actions joinSession={connectToPeer} disconnect={handleDisconnect} status={status} />
 
       {/* information tab */}
       <Info content={userId} />

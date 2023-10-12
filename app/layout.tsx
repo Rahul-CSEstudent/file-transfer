@@ -34,7 +34,7 @@ export default function RootLayout({
       <head />
       <body
         className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-background font-sans antialiased bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500",
           fontSans.variable
         )}
       >
@@ -51,8 +51,8 @@ export default function RootLayout({
                 href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
                 title="nextui.org homepage"
               >
-                <span className="text-default-600">Project by</span>
-                <p className="text-primary">Hlo Devs</p>
+                {/* <span className="text-default-600">Project by</span> */}
+                {/* <p className="text-primary">Hlo Devs</p> */}
               </Link>
             </footer>
           </div>
