@@ -9,6 +9,8 @@ import {
 } from "@/components/sections/fileinputbox";
 import { Header } from "@/components/sections/header";
 import { Info } from "@/components/sections/info";
+import { Navbar } from "@/components/navbar";
+import { Link } from "@nextui-org/link";
 
 import { DataConnection, Peer } from "peerjs";
 import { useEffect, useState } from "react";
@@ -130,8 +132,10 @@ export default function Home() {
   return (
     //set background to img "../public/bg.png"
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+                <div className="relative flex flex-col">
       {/* heading section */}
-      <Header />
+      {/* <Header /> */}
+      <Navbar />
 
       {/* buttons */}
       <Actions joinSession={connectToPeer} disconnect={handleDisconnect} status={status} />
@@ -144,6 +148,7 @@ export default function Home() {
 
       <div className="flex content-center justify-center mt-8">
         <FileGrid files={files} />
+      </div>
       </div>
     </section>
   );
